@@ -71,22 +71,7 @@
 
 <script>
     const appList = document.getElementById('appList');
-    let apps = [];
-
-    document.getElementById('addAppButton').addEventListener('click', function() {
-        const name = document.getElementById('appName').value;
-        const description = document.getElementById('appDescription').value;
-        const link = document.getElementById('appLink').value;
-
-        const newApp = { name, description, link };
-        apps.push(newApp);
-        displayApps();
-        
-        // مسح الحقول بعد الإضافة
-        document.getElementById('appName').value = '';
-        document.getElementById('appDescription').value = '';
-        document.getElementById('appLink').value = '';
-    });
+    let apps = JSON.parse(localStorage.getItem('apps')) || [];
 
     function displayApps() {
         appList.innerHTML = '';
@@ -102,14 +87,39 @@
         });
     }
 
+    function saveApps() {
+        localStorage.setItem('apps', JSON.stringify(apps));
+    }
+
+    document.getElementById('addAppButton').addEventListener('click', function() {
+        const name = document.getElementById('appName').value;
+        const description = document.getElementById('appDescription').value;
+        const link = document.getElementById('appLink').value;
+
+        const newApp = { name, description, link };
+        apps.push(newApp);
+        displayApps();
+        saveApps(); // حفظ التطبيقات في LocalStorage
+        
+        // مسح الحقول بعد الإضافة
+        document.getElementById('appName').value = '';
+        document.getElementById('appDescription').value = '';
+        document.getElementById('appLink').value = '';
+    });
+
     function deleteApp(index) {
         apps.splice(index, 1); // إزالة التطبيق من المصفوفة
         displayApps(); // تحديث عرض التطبيقات
+        saveApps(); // حفظ التغييرات
     }
 
     document.getElementById('saveChangesButton').addEventListener('click', function() {
-        alert('تم حفظ التغييرات بنجاح!'); // هنا يمكنك إضافة كود لحفظ البيانات بشكل دائم، مثل استخدام LocalStorage أو قاعدة بيانات.
+        saveApps(); // حفظ التطبيقات في LocalStorage
+        alert('تم حفظ التغييرات بنجاح!');
     });
+
+    // عرض التطبيقات عند تحميل الصفحة
+    displayApps();
 </script>
 
 </body>
