@@ -5,18 +5,58 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dark Haker</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         body {
-            background-color: #000000;
+            background-color: #121212; /* خلفية داكنة */
             color: #FFFFFF;
             font-family: 'Roboto', sans-serif;
             text-align: center;
             padding: 20px;
+            margin: 0;
         }
         h1 {
             color: #FFD700; /* اللون الذهبي */
+            margin-bottom: 20px;
         }
-        #links, #files {
+        .navbar {
+            margin: 20px 0;
+        }
+        .navbar a {
+            margin: 0 15px;
+            color: #FFD700;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .search-container {
+            margin: 20px 0;
+        }
+        input[type="text"] {
+            padding: 10px;
+            border: 1px solid #FFD700; /* اللون الذهبي */
+            border-radius: 5px;
+            width: 300px;
+        }
+        #content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .link-item {
+            background-color: #333; /* خلفية رمادية */
+            border: 1px solid #FFD700;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 10px 0;
+            width: 80%;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .link-item:hover {
+            transform: scale(1.02); /* تكبير عند التمرير */
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+        }
+        .not-found {
+            color: red;
             margin-top: 20px;
         }
     </style>
@@ -25,33 +65,70 @@
 
     <div class="container">
         <h1>Dark Haker</h1>
-
-        <h2>الروابط المهمة</h2>
-        <div id="links"></div>
+        <div class="navbar">
+            <a href="index.html">الرئيسية</a>
+            <a href="admin.html">إدارة</a>
+        </div>
         
-        <h2>الملفات القابلة للتحميل</h2>
-        <div id="files"></div>
+        <div class="search-container">
+            <input type="text" id="search" placeholder="ابحث عن رابط أو ملف..." onkeyup="searchContent()">
+        </div>
+        
+        <div id="content"></div>
+        <div class="not-found" id="notFound" style="display: none;">لا توجد نتائج مطابقة.</div>
     </div>
 
     <script>
-        // هنا كود JavaScript لإظهار الروابط والملفات من التخزين المحلي
-        const linksContainer = document.getElementById('links');
-        const filesContainer = document.getElementById('files');
-
+        const contentContainer = document.getElementById('content');
+        const notFoundMessage = document.getElementById('notFound');
         const links = JSON.parse(localStorage.getItem('links')) || [];
         const files = JSON.parse(localStorage.getItem('files')) || [];
 
-        links.forEach(link => {
-            const linkElement = document.createElement('div');
-            linkElement.innerHTML = `<a href="${link.url}" style="color: ${link.color};">${link.text}</a>`;
-            linksContainer.appendChild(linkElement);
-        });
+        function displayContent() {
+            contentContainer.innerHTML = '';
+            notFoundMessage.style.display = 'none';
 
-        files.forEach(file => {
-            const fileElement = document.createElement('div');
-            fileElement.innerHTML = `<a href="${file.url}" download>${file.text}</a>`;
-            filesContainer.appendChild(fileElement);
-        });
+            links.forEach(link => {
+                const linkElement = document.createElement('a');
+                linkElement.className = 'link-item';
+                linkElement.href = link.url;
+                linkElement.style.color = link.color;
+                linkElement.innerText = link.text || "رابط جديد";
+                contentContainer.appendChild(linkElement);
+            });
+
+            files.forEach(file => {
+                const fileElement = document.createElement('a');
+                fileElement.className = 'link-item';
+                fileElement.href = file.url;
+                fileElement.innerText = file.text || "ملف جديد";
+                fileElement.download = true;
+                contentContainer.appendChild(fileElement);
+            });
+        }
+
+        function searchContent() {
+            const query = document.getElementById('search').value.toLowerCase();
+            const allContent = [...links, ...files];
+            const filteredContent = allContent.filter(item => 
+                (item.text && item.text.toLowerCase().includes(query)) || 
+                (item.url && item.url.toLowerCase().includes(query))
+            );
+
+            contentContainer.innerHTML = '';
+            notFoundMessage.style.display = filteredContent.length === 0 ? 'block' : 'none';
+
+            filteredContent.forEach(item => {
+                const element = document.createElement('a');
+                element.className = 'link-item';
+                element.href = item.url;
+                element.innerText = item.text || "ملف جديد";
+                element.download = item.download ? true : undefined;
+                contentContainer.appendChild(element);
+            });
+        }
+
+        displayContent();
     </script>
 
 </body>
