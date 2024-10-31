@@ -3,111 +3,101 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة التحكم - Dark Haker</title>
+    <title>إدارة Dark Haker</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         body {
-            background-color: #121212;
-            color: #fff;
-            font-family: Arial, sans-serif;
-            margin: 0;
+            background-color: #121212; /* خلفية داكنة */
+            color: #FFFFFF;
+            font-family: 'Roboto', sans-serif;
+            text-align: center;
             padding: 20px;
+            margin: 0;
         }
         h1 {
-            text-align: center;
-            color: gold;
+            color: #FFD700; /* اللون الذهبي */
+            margin-bottom: 20px;
         }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
+        .container {
+            max-width: 600px;
+            margin: auto;
+            padding: 20px;
+            background-color: #222222; /* خلفية رمادية */
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
         }
-        th, td {
+        input[type="text"], input[type="password"], input[type="file"] {
+            width: calc(100% - 20px);
             padding: 10px;
-            text-align: right;
-            border: 1px solid #444;
+            margin: 5px 0;
+            border: 1px solid #FFD700; /* اللون الذهبي */
+            border-radius: 5px;
+            background-color: #444444;
+            color: #FFFFFF;
         }
-        button {
-            padding: 5px 10px;
-            margin-left: 5px;
-            background-color: #333;
+        .button {
+            background-color: #FFD700; /* اللون الذهبي */
+            color: #000000;
+            padding: 10px 20px;
             border: none;
-            color: #fff;
+            border-radius: 5px;
             cursor: pointer;
+            margin-top: 10px;
+            display: inline-block;
+            transition: background-color 0.3s ease;
         }
-        button:hover {
-            background-color: #555;
+        .button:hover {
+            background-color: #FFA500; /* لون برتقالي عند التمرير */
         }
-        .controls {
+        #adminSection {
+            display: none; /* إخفاء قسم الإدارة بشكل افتراضي */
+        }
+        #error {
+            color: red; 
+            margin-top: 10px;
+        }
+        h2 {
             margin-top: 20px;
+            color: #FFD700; /* اللون الذهبي */
         }
     </style>
 </head>
 <body>
-    <h1>لوحة التحكم - Dark Haker</h1>
-    <table>
-        <thead>
-            <tr>
-                <th>العنوان</th>
-                <th>الرابط</th>
-                <th>تحرير / حذف</th>
-            </tr>
-        </thead>
-        <tbody id="contentTable">
-            <!-- يتم إضافة المحتوى هنا بواسطة JavaScript -->
-        </tbody>
-    </table>
-    <div class="controls">
-        <h2>إضافة رابط جديد</h2>
-        <input type="text" id="titleInput" placeholder="عنوان الرابط" />
-        <input type="text" id="urlInput" placeholder="الرابط" />
-        <button onclick="addLink()">إضافة</button>
+
+    <div class="container">
+        <h1>إدارة Dark Haker</h1>
+        <input type="password" id="password" placeholder="أدخل كلمة المرور" required>
+        <button class="button" onclick="checkPassword()">دخول</button>
+
+        <div id="adminSection">
+            <h2>تحديث المحتوى</h2>
+            <input type="text" id="newText" placeholder="أدخل نص الرابط الجديد (اختياري)">
+            <input type="text" id="newLink" placeholder="أدخل رابط جديد (اختياري)">
+            <input type="color" id="linkColor" value="#FFD700">
+            <button class="button" onclick="addLink()">إضافة رابط</button>
+
+            <h2>تحميل ملفات</h2>
+            <input type="file" id="fileInput" />
+            <button class="button" onclick="uploadFile()">تحميل ملف</button>
+        </div>
+        
+        <div id="error"></div>
     </div>
 
     <script>
-        let content = [];
+        const correctPassword = "1234"; // كلمة المرور
+        function checkPassword() {
+            const passwordInput = document.getElementById('password').value;
+            if (passwordInput === correctPassword) {
+                document.getElementById('adminSection').style.display = 'block';
+                document.getElementById('error').innerText = '';
+            } else {
+                document.getElementById('error').innerText = 'كلمة المرور خاطئة! حاول مرة أخرى.';
+            }
+        }
 
         function addLink() {
-            const title = document.getElementById('titleInput').value;
-            const url = document.getElementById('urlInput').value;
-
-            if (title && url) {
-                content.push({ title, url });
-                updateTable();
-                document.getElementById('titleInput').value = '';
-                document.getElementById('urlInput').value = '';
-            }
-        }
-
-        function updateTable() {
-            const tableBody = document.getElementById('contentTable');
-            tableBody.innerHTML = '';
-            content.forEach((item, index) => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${item.title}</td>
-                    <td><a href="${item.url}" target="_blank">${item.url}</a></td>
-                    <td>
-                        <button onclick="editLink(${index})">تحرير</button>
-                        <button onclick="deleteLink(${index})">حذف</button>
-                    </td>
-                `;
-                tableBody.appendChild(row);
-            });
-        }
-
-        function editLink(index) {
-            const newTitle = prompt("أدخل عنوان الرابط الجديد:", content[index].title);
-            const newUrl = prompt("أدخل الرابط الجديد:", content[index].url);
-            if (newTitle && newUrl) {
-                content[index] = { title: newTitle, url: newUrl };
-                updateTable();
-            }
-        }
-
-        function deleteLink(index) {
-            content.splice(index, 1);
-            updateTable();
-        }
-    </script>
-</body>
-</html>
+            const text = document.getElementById('newText').value;
+            const link = document.getElementById('newLink').value;
+            const color = document.getElementById('
