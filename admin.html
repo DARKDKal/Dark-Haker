@@ -3,101 +3,99 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>إدارة Dark Haker</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <title>صفحة الإدارة</title>
     <style>
         body {
-            background-color: #121212; /* خلفية داكنة */
-            color: #FFFFFF;
-            font-family: 'Roboto', sans-serif;
-            text-align: center;
-            padding: 20px;
+            background-color: #121212;
+            color: #ffffff;
+            font-family: Arial, sans-serif;
             margin: 0;
-        }
-        h1 {
-            color: #FFD700; /* اللون الذهبي */
-            margin-bottom: 20px;
-        }
-        .container {
-            max-width: 600px;
-            margin: auto;
             padding: 20px;
-            background-color: #222222; /* خلفية رمادية */
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
-        }
-        input[type="text"], input[type="password"], input[type="file"] {
-            width: calc(100% - 20px);
-            padding: 10px;
-            margin: 5px 0;
-            border: 1px solid #FFD700; /* اللون الذهبي */
-            border-radius: 5px;
-            background-color: #444444;
-            color: #FFFFFF;
-        }
-        .button {
-            background-color: #FFD700; /* اللون الذهبي */
-            color: #000000;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-top: 10px;
-            display: inline-block;
-            transition: background-color 0.3s ease;
-        }
-        .button:hover {
-            background-color: #FFA500; /* لون برتقالي عند التمرير */
-        }
-        #adminSection {
-            display: none; /* إخفاء قسم الإدارة بشكل افتراضي */
-        }
-        #error {
-            color: red; 
-            margin-top: 10px;
         }
         h2 {
-            margin-top: 20px;
-            color: #FFD700; /* اللون الذهبي */
+            text-align: center;
+            color: gold;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #444;
+            padding: 10px;
+            text-align: right;
+        }
+        th {
+            background-color: #1e1e1e;
+        }
+        .button {
+            background-color: #444;
+            color: #ffffff;
+            border: none;
+            border-radius: 4px;
+            padding: 10px;
+            cursor: pointer;
+        }
+        .upload-section {
+            margin-bottom: 20px;
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <h1>إدارة Dark Haker</h1>
-        <input type="password" id="password" placeholder="أدخل كلمة المرور" required>
-        <button class="button" onclick="checkPassword()">دخول</button>
+<h2>صفحة الإدارة</h2>
 
-        <div id="adminSection">
-            <h2>تحديث المحتوى</h2>
-            <input type="text" id="newText" placeholder="أدخل نص الرابط الجديد (اختياري)">
-            <input type="text" id="newLink" placeholder="أدخل رابط جديد (اختياري)">
-            <input type="color" id="linkColor" value="#FFD700">
-            <button class="button" onclick="addLink()">إضافة رابط</button>
+<div class="upload-section">
+    <h3>إضافة تطبيق جديد</h3>
+    <input type="text" id="appName" placeholder="اسم التطبيق" required>
+    <input type="text" id="appDescription" placeholder="وصف التطبيق" required>
+    <input type="text" id="appLink" placeholder="رابط التطبيق" required>
+    <button class="button" id="addAppButton">إضافة التطبيق</button>
+</div>
 
-            <h2>تحميل ملفات</h2>
-            <input type="file" id="fileInput" />
-            <button class="button" onclick="uploadFile()">تحميل ملف</button>
-        </div>
+<table>
+    <thead>
+        <tr>
+            <th>اسم التطبيق</th>
+            <th>الوصف</th>
+            <th>الرابط</th>
+            <th>الإجراء</th>
+        </tr>
+    </thead>
+    <tbody id="appList">
+        <!-- هنا يتم إدراج التطبيقات -->
+    </tbody>
+</table>
+
+<script>
+    const appList = document.getElementById('appList');
+
+    document.getElementById('addAppButton').addEventListener('click', function() {
+        const name = document.getElementById('appName').value;
+        const description = document.getElementById('appDescription').value;
+        const link = document.getElementById('appLink').value;
+
+        const newRow = document.createElement('tr');
+        newRow.innerHTML = `
+            <td>${name}</td>
+            <td>${description}</td>
+            <td><a href="${link}" target="_blank">${link}</a></td>
+            <td><button class="button" onclick="deleteApp(this)">حذف</button></td>
+        `;
+        appList.appendChild(newRow);
         
-        <div id="error"></div>
-    </div>
+        // مسح الحقول بعد الإضافة
+        document.getElementById('appName').value = '';
+        document.getElementById('appDescription').value = '';
+        document.getElementById('appLink').value = '';
+    });
 
-    <script>
-        const correctPassword = "1234"; // كلمة المرور
-        function checkPassword() {
-            const passwordInput = document.getElementById('password').value;
-            if (passwordInput === correctPassword) {
-                document.getElementById('adminSection').style.display = 'block';
-                document.getElementById('error').innerText = '';
-            } else {
-                document.getElementById('error').innerText = 'كلمة المرور خاطئة! حاول مرة أخرى.';
-            }
-        }
+    function deleteApp(button) {
+        const row = button.parentElement.parentElement;
+        appList.removeChild(row);
+    }
+</script>
 
-        function addLink() {
-            const text = document.getElementById('newText').value;
-            const link = document.getElementById('newLink').value;
-            const color = document.getElementById('
+</body>
+</html>
