@@ -40,37 +40,59 @@
         .upload-section {
             margin-bottom: 20px;
         }
+        .password-section {
+            text-align: center;
+            margin-bottom: 20px;
+        }
     </style>
 </head>
 <body>
 
-<h2>صفحة الإدارة</h2>
-
-<div class="upload-section">
-    <h3>إضافة تطبيق جديد</h3>
-    <input type="text" id="appName" placeholder="اسم التطبيق" required>
-    <input type="text" id="appDescription" placeholder="وصف التطبيق" required>
-    <input type="text" id="appLink" placeholder="رابط التطبيق" required>
-    <button class="button" id="addAppButton">إضافة التطبيق</button>
-    <button class="button" id="saveChangesButton">حفظ التغييرات</button>
+<div class="password-section" id="passwordSection">
+    <h3>أدخل كلمة المرور للدخول إلى صفحة الإدارة</h3>
+    <input type="password" id="passwordInput" placeholder="كلمة المرور" required>
+    <button class="button" id="submitPassword">دخول</button>
 </div>
 
-<table>
-    <thead>
-        <tr>
-            <th>اسم التطبيق</th>
-            <th>الوصف</th>
-            <th>الرابط</th>
-            <th>الإجراء</th>
-        </tr>
-    </thead>
-    <tbody id="appList">
-        <!-- هنا يتم إدراج التطبيقات -->
-    </tbody>
-</table>
+<div id="adminContent" style="display: none;">
+    <h2>صفحة الإدارة</h2>
+
+    <div class="upload-section">
+        <h3>إضافة تطبيق جديد</h3>
+        <input type="text" id="appName" placeholder="اسم التطبيق" required>
+        <input type="text" id="appDescription" placeholder="وصف التطبيق" required>
+        <input type="text" id="appLink" placeholder="رابط التطبيق" required>
+        <button class="button" id="addAppButton">إضافة التطبيق</button>
+        <button class="button" id="saveChangesButton">حفظ التغييرات</button>
+    </div>
+
+    <div class="upload-section">
+        <h3>رفع ملف جديد</h3>
+        <input type="file" id="fileInput" />
+        <button class="button" id="uploadFileButton">رفع الملف</button>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>اسم التطبيق</th>
+                <th>الوصف</th>
+                <th>الرابط</th>
+                <th>الإجراء</th>
+            </tr>
+        </thead>
+        <tbody id="appList">
+            <!-- هنا يتم إدراج التطبيقات -->
+        </tbody>
+    </table>
+</div>
 
 <script>
     const appList = document.getElementById('appList');
+    const adminContent = document.getElementById('adminContent');
+    const passwordSection = document.getElementById('passwordSection');
+    const correctPassword = "Dark77"; // كلمة المرور
+
     let apps = JSON.parse(localStorage.getItem('apps')) || [];
 
     function displayApps() {
@@ -118,8 +140,41 @@
         alert('تم حفظ التغييرات بنجاح!');
     });
 
-    // عرض التطبيقات عند تحميل الصفحة
-    displayApps();
+    // رفع ملف جديد
+    document.getElementById('uploadFileButton').addEventListener('click', function() {
+        const fileInput = document.getElementById('fileInput');
+        const file = fileInput.files[0];
+
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const fileURL = e.target.result; // URL محلي للملف
+                const name = file.name;
+                const description = "ملف: " + name;
+                const newApp = { name, description, link: fileURL }; // استخدام URL للملف كمحتوى للتطبيق
+                apps.push(newApp);
+                displayApps();
+                saveApps(); // حفظ التطبيقات في LocalStorage
+                fileInput.value = ''; // مسح حقل الإدخال
+            };
+            reader.readAsDataURL(file); // قراءة الملف كـ URL
+        } else {
+            alert('يرجى اختيار ملف للرفع!');
+        }
+    });
+
+    // تحقق من كلمة المرور
+    document.getElementById('submitPassword').addEventListener('click', function() {
+        const inputPassword = document.getElementById('passwordInput').value;
+        if (inputPassword === correctPassword) {
+            passwordSection.style.display = 'none'; // إخفاء قسم كلمة المرور
+            adminContent.style.display = 'block'; // عرض محتوى الإدارة
+            displayApps(); // عرض التطبيقات عند تحميل الصفحة
+        } else {
+            alert('كلمة المرور غير صحيحة!');
+        }
+    });
+
 </script>
 
 </body>
