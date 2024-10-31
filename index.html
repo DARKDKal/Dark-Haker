@@ -4,132 +4,47 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dark Haker</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         body {
-            background-color: #121212; /* خلفية داكنة */
-            color: #FFFFFF;
-            font-family: 'Roboto', sans-serif;
-            text-align: center;
-            padding: 20px;
+            background-color: #121212;
+            color: #fff;
+            font-family: Arial, sans-serif;
             margin: 0;
+            padding: 20px;
         }
         h1 {
-            color: #FFD700; /* اللون الذهبي */
-            margin-bottom: 20px;
+            text-align: center;
+            color: gold;
         }
-        .navbar {
-            margin: 20px 0;
-        }
-        .navbar a {
-            margin: 0 15px;
-            color: #FFD700;
-            text-decoration: none;
-            font-weight: bold;
-        }
-        .search-container {
-            margin: 20px 0;
-        }
-        input[type="text"] {
-            padding: 10px;
-            border: 1px solid #FFD700; /* اللون الذهبي */
-            border-radius: 5px;
-            width: 300px;
-        }
-        #content {
+        .link-container {
             display: flex;
             flex-direction: column;
             align-items: center;
         }
         .link-item {
-            background-color: #333; /* خلفية رمادية */
-            border: 1px solid #FFD700;
-            border-radius: 5px;
-            padding: 15px;
+            background-color: #333;
+            border: 1px solid #444;
+            padding: 10px;
             margin: 10px 0;
-            width: 80%;
-            transition: transform 0.2s, box-shadow 0.2s;
+            width: 300px;
+            text-align: right;
         }
-        .link-item:hover {
-            transform: scale(1.02); /* تكبير عند التمرير */
-            box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
-        }
-        .not-found {
-            color: red;
+        .popular-links {
             margin-top: 20px;
         }
     </style>
 </head>
 <body>
-
-    <div class="container">
-        <h1>Dark Haker</h1>
-        <div class="navbar">
-            <a href="index.html">الرئيسية</a>
-            <a href="admin.html">إدارة</a>
-        </div>
-        
-        <div class="search-container">
-            <input type="text" id="search" placeholder="ابحث عن رابط أو ملف..." onkeyup="searchContent()">
-        </div>
-        
-        <div id="content"></div>
-        <div class="not-found" id="notFound" style="display: none;">لا توجد نتائج مطابقة.</div>
+    <h1>Dark Haker</h1>
+    <div class="link-container" id="linkContainer">
+        <div class="link-item"><a href="http://example.com" style="color: white;">رابط تجريبي</a></div>
+        <!-- الروابط الأخرى يمكن إضافتها هنا -->
     </div>
-
-    <script>
-        const contentContainer = document.getElementById('content');
-        const notFoundMessage = document.getElementById('notFound');
-        const links = JSON.parse(localStorage.getItem('links')) || [];
-        const files = JSON.parse(localStorage.getItem('files')) || [];
-
-        function displayContent() {
-            contentContainer.innerHTML = '';
-            notFoundMessage.style.display = 'none';
-
-            links.forEach(link => {
-                const linkElement = document.createElement('a');
-                linkElement.className = 'link-item';
-                linkElement.href = link.url;
-                linkElement.style.color = link.color;
-                linkElement.innerText = link.text || "رابط جديد";
-                contentContainer.appendChild(linkElement);
-            });
-
-            files.forEach(file => {
-                const fileElement = document.createElement('a');
-                fileElement.className = 'link-item';
-                fileElement.href = file.url;
-                fileElement.innerText = file.text || "ملف جديد";
-                fileElement.download = true;
-                contentContainer.appendChild(fileElement);
-            });
-        }
-
-        function searchContent() {
-            const query = document.getElementById('search').value.toLowerCase();
-            const allContent = [...links, ...files];
-            const filteredContent = allContent.filter(item => 
-                (item.text && item.text.toLowerCase().includes(query)) || 
-                (item.url && item.url.toLowerCase().includes(query))
-            );
-
-            contentContainer.innerHTML = '';
-            notFoundMessage.style.display = filteredContent.length === 0 ? 'block' : 'none';
-
-            filteredContent.forEach(item => {
-                const element = document.createElement('a');
-                element.className = 'link-item';
-                element.href = item.url;
-                element.innerText = item.text || "ملف جديد";
-                element.download = item.download ? true : undefined;
-                contentContainer.appendChild(element);
-            });
-        }
-
-        displayContent();
-    </script>
-
+    <div class="popular-links">
+        <h2>الروابط الأكثر شيوعًا</h2>
+        <div class="link-item"><a href="http://popular1.com" style="color: white;">رابط شائع 1</a></div>
+        <div class="link-item"><a href="http://popular2.com" style="color: white;">رابط شائع 2</a></div>
+        <div class="link-item"><a href="http://popular3.com" style="color: white;">رابط شائع 3</a></div>
+    </div>
 </body>
 </html>
