@@ -16,45 +16,48 @@
             text-align: center;
             color: gold;
         }
+        .app-list {
+            margin: 20px 0;
+        }
         .app-item {
             margin: 10px 0;
             padding: 10px;
-            border: 1px solid #444;
             background-color: #1e1e1e;
-            border-radius: 4px;
+            border-radius: 5px;
         }
         a {
-            color: #00ccff;
+            color: #00ff00;
+            text-decoration: none;
         }
     </style>
 </head>
 <body>
 
-<h1>تطبيقات مفيدة</h1>
-<div id="appList">
-    <!-- هنا يتم إدراج التطبيقات -->
+<h1>Dark Haker</h1>
+
+<div class="app-list" id="appList">
+    <!-- التطبيقات ستظهر هنا -->
 </div>
 
 <script>
     const appList = document.getElementById('appList');
+    const apps = JSON.parse(localStorage.getItem('apps')) || [];
 
     function displayApps() {
-        const apps = JSON.parse(localStorage.getItem('apps')) || [];
-        appList.innerHTML = ''; // مسح القائمة الحالية
+        appList.innerHTML = '';
         apps.forEach(app => {
             const appItem = document.createElement('div');
-            appItem.classList.add('app-item');
+            appItem.className = 'app-item';
             appItem.innerHTML = `
                 <strong>${app.name}</strong><br>
                 <span>${app.description}</span><br>
-                <a href="${app.link}" target="_blank">تحميل التطبيق</a>
+                <a href="${app.link}" target="_blank">تحميل</a>
             `;
             appList.appendChild(appItem);
         });
     }
 
-    // عرض التطبيقات عند تحميل الصفحة
-    displayApps();
+    displayApps(); // عرض التطبيقات عند تحميل الصفحة
 </script>
 
 </body>
