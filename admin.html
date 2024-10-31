@@ -52,6 +52,7 @@
     <input type="text" id="appDescription" placeholder="وصف التطبيق" required>
     <input type="text" id="appLink" placeholder="رابط التطبيق" required>
     <button class="button" id="addAppButton">إضافة التطبيق</button>
+    <button class="button" id="saveChangesButton">حفظ التغييرات</button>
 </div>
 
 <table>
@@ -70,20 +71,16 @@
 
 <script>
     const appList = document.getElementById('appList');
+    let apps = [];
 
     document.getElementById('addAppButton').addEventListener('click', function() {
         const name = document.getElementById('appName').value;
         const description = document.getElementById('appDescription').value;
         const link = document.getElementById('appLink').value;
 
-        const newRow = document.createElement('tr');
-        newRow.innerHTML = `
-            <td>${name}</td>
-            <td>${description}</td>
-            <td><a href="${link}" target="_blank">${link}</a></td>
-            <td><button class="button" onclick="deleteApp(this)">حذف</button></td>
-        `;
-        appList.appendChild(newRow);
+        const newApp = { name, description, link };
+        apps.push(newApp);
+        displayApps();
         
         // مسح الحقول بعد الإضافة
         document.getElementById('appName').value = '';
@@ -91,10 +88,28 @@
         document.getElementById('appLink').value = '';
     });
 
-    function deleteApp(button) {
-        const row = button.parentElement.parentElement;
-        appList.removeChild(row);
+    function displayApps() {
+        appList.innerHTML = '';
+        apps.forEach((app, index) => {
+            const newRow = document.createElement('tr');
+            newRow.innerHTML = `
+                <td>${app.name}</td>
+                <td>${app.description}</td>
+                <td><a href="${app.link}" target="_blank">${app.link}</a></td>
+                <td><button class="button" onclick="deleteApp(${index})">حذف</button></td>
+            `;
+            appList.appendChild(newRow);
+        });
     }
+
+    function deleteApp(index) {
+        apps.splice(index, 1); // إزالة التطبيق من المصفوفة
+        displayApps(); // تحديث عرض التطبيقات
+    }
+
+    document.getElementById('saveChangesButton').addEventListener('click', function() {
+        alert('تم حفظ التغييرات بنجاح!'); // هنا يمكنك إضافة كود لحفظ البيانات بشكل دائم، مثل استخدام LocalStorage أو قاعدة بيانات.
+    });
 </script>
 
 </body>
