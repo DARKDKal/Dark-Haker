@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dark Haker</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background-color: #000000;
+            color: #FFFFFF;
+            font-family: 'Roboto', sans-serif;
+            text-align: center;
+            padding: 20px;
+        }
+        h1 {
+            color: #FFD700; /* اللون الذهبي */
+        }
+        .hidden-info {
+            color: #FFD700;
+            font-size: 0.8em; /* حجم خط أصغر */
+            margin-top: 20px;
+        }
+        #links, #files {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Dark Haker</h1>
+        <p>للوصول إلى صفحة الإدارة، يرجى كتابة <strong>http://yourwebsite.com/admin.html</strong> في شريط العنوان.</p>
+        
+        <p class="hidden-info">ملاحظة: يمكنك إدخال رابط الإدارة مباشرة.</p>
+
+        <h2>الروابط المهمة</h2>
+        <div id="links"></div>
+        
+        <h2>الملفات القابلة للتحميل</h2>
+        <div id="files"></div>
+    </div>
+
+    <script>
+        // هنا كود JavaScript لإظهار الروابط والملفات من التخزين المحلي
+        const linksContainer = document.getElementById('links');
+        const filesContainer = document.getElementById('files');
+
+        const links = JSON.parse(localStorage.getItem('links')) || [];
+        const files = JSON.parse(localStorage.getItem('files')) || [];
+
+        links.forEach(link => {
+            const linkElement = document.createElement('div');
+            linkElement.innerHTML = `<a href="${link.url}" style="color: ${link.color};">${link.text}</a>`;
+            linksContainer.appendChild(linkElement);
+        });
+
+        files.forEach(file => {
+            const fileElement = document.createElement('div');
+            fileElement.innerHTML = `<a href="${file.url}" download>${file.text}</a>`;
+            filesContainer.appendChild(fileElement);
+        });
+    </script>
+
+</body>
+</html>
