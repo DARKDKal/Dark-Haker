@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إدارة Dark Haker</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background-color: #000000;
+            color: #FFFFFF;
+            font-family: 'Roboto', sans-serif;
+            text-align: center;
+            padding: 20px;
+        }
+        h1 {
+            color: #FFD700; /* اللون الذهبي */
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            padding: 20px;
+            background-color: #222222;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+        }
+        input[type="text"], input[type="password"], input[type="file"] {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #FFD700; /* اللون الذهبي */
+            border-radius: 5px;
+            background-color: #444444;
+            color: #FFFFFF;
+        }
+        .button {
+            background-color: #FFD700; /* اللون الذهبي */
+            color: #000000;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+            display: inline-block;
+            transition: background-color 0.3s ease;
+        }
+        .button:hover {
+            background-color: #FFA500; /* لون برتقالي عند التمرير */
+        }
+        #adminSection {
+            display: none; /* إخفاء قسم الإدارة بشكل افتراضي */
+        }
+        #error {
+            color: red; 
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>إدارة Dark Haker</h1>
+        <input type="password" id="password" placeholder="أدخل كلمة المرور" required>
+        <button class="button" onclick="checkPassword()">دخول</button>
+
+        <div id="adminSection">
+            <h2>تحديث الروابط</h2>
+            <input type="text" id="newText" placeholder="أدخل نص الرابط الجديد" required>
+            <input type="text" id="newLink" placeholder="أدخل رابط جديد" required>
+            <button class="button" onclick="addLink()">إضافة رابط</button>
+
+            <h2>تحديث الملفات</h2>
+            <input type="file" id="fileInput" />
+            <button class="button" onclick="uploadFile()">تحميل ملف</button>
+        </div>
+        
+        <div id="error"></div>
+    </div>
+
+    <script>
+        const correctPassword = "1234"; // كلمة المرور
+        function checkPassword() {
+            const passwordInput = document.getElementById('password').value;
+            if (passwordInput === correctPassword) {
+                document.getElementById('adminSection').style.display = 'block';
+                document.getElementById('error').innerText = '';
+            } else {
+                document.getElementById('error').innerText = 'كلمة المرور خاطئة! حاول مرة أخرى.';
+            }
+        }
+
+        function addLink() {
+            const text = document.getElementById('newText').value;
+            const link = document.getElementById('newLink').value;
+            if (text && link) {
+                const links = JSON.parse(localStorage.getItem('links')) || [];
+                links.push({ text: text, url: link, color: '#FFD700' }); // اللون الذهبي كقيمة افتراضية
+                localStorage.setItem('links', JSON.stringify(links));
+                alert('تم إضافة الرابط بنجاح!');
+                document.getElementById('newText').value = '';
+                document.getElementById('newLink').value = '';
+            }
+        }
+
+        function uploadFile() {
+            const fileInput = document.getElementById('fileInput');
+            const file = fileInput.files[0];
+            if (file) {
+                const files = JSON.parse(localStorage.getItem('files')) || [];
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    files.push({ text: file.name, url: event.target.result });
+                    localStorage.setItem('files', JSON.stringify(files));
+                    alert('تم تحميل الملف بنجاح!');
+                    fileInput.value = ''; // مسح المدخل بعد التحميل
+                };
+                reader.readAsDataURL(file); // تحويل الملف إلى عنوان URL للبيانات
+            }
+        }
+    </script>
+
+</body>
+</html>
