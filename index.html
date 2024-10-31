@@ -4,132 +4,59 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dark Haker</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         body {
-            background-color: #121212; /* خلفية داكنة */
-            color: #FFFFFF;
-            font-family: 'Roboto', sans-serif;
-            text-align: center;
-            padding: 20px;
+            background-color: #121212;
+            color: #ffffff;
+            font-family: Arial, sans-serif;
             margin: 0;
+            padding: 20px;
         }
         h1 {
-            color: #FFD700; /* اللون الذهبي */
-            margin-bottom: 20px;
+            text-align: center;
+            color: gold;
         }
-        .navbar {
+        .app-container {
             margin: 20px 0;
-        }
-        .navbar a {
-            margin: 0 15px;
-            color: #FFD700;
-            text-decoration: none;
-            font-weight: bold;
-        }
-        .search-container {
-            margin: 20px 0;
-        }
-        input[type="text"] {
-            padding: 10px;
-            border: 1px solid #FFD700; /* اللون الذهبي */
-            border-radius: 5px;
-            width: 300px;
-        }
-        #content {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        .link-item {
-            background-color: #333; /* خلفية رمادية */
-            border: 1px solid #FFD700;
-            border-radius: 5px;
             padding: 15px;
-            margin: 10px 0;
-            width: 80%;
-            transition: transform 0.2s, box-shadow 0.2s;
+            border: 1px solid #444;
+            border-radius: 8px;
+            background-color: #1e1e1e;
         }
-        .link-item:hover {
-            transform: scale(1.02); /* تكبير عند التمرير */
-            box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+        .app-title {
+            color: lightblue;
+            font-size: 20px;
         }
-        .not-found {
-            color: red;
-            margin-top: 20px;
+        .download-button {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 10px 15px;
+            background-color: #444;
+            border: none;
+            border-radius: 4px;
+            color: #ffffff;
+            text-decoration: none;
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <h1>Dark Haker</h1>
-        <div class="navbar">
-            <a href="index.html">الرئيسية</a>
-            <a href="admin.html">إدارة</a>
-        </div>
-        
-        <div class="search-container">
-            <input type="text" id="search" placeholder="ابحث عن رابط أو ملف..." onkeyup="searchContent()">
-        </div>
-        
-        <div id="content"></div>
-        <div class="not-found" id="notFound" style="display: none;">لا توجد نتائج مطابقة.</div>
-    </div>
+<h1>Dark Haker</h1>
 
-    <script>
-        const contentContainer = document.getElementById('content');
-        const notFoundMessage = document.getElementById('notFound');
-        const links = JSON.parse(localStorage.getItem('links')) || [];
-        const files = JSON.parse(localStorage.getItem('files')) || [];
+<div class="app-container">
+    <div class="app-title">1. تطبيق جميل جداً: <strong>اسم التطبيق</strong></div>
+    <p>وصف التطبيق هنا. هذا هو التطبيق الذي يفعل كذا وكذا.</p>
+    <a class="download-button" href="رابط_التطبيق" download>تحميل التطبيق</a>
+</div>
 
-        function displayContent() {
-            contentContainer.innerHTML = '';
-            notFoundMessage.style.display = 'none';
+<div class="app-container">
+    <div class="app-title">2. تطبيق آخر: <strong>اسم التطبيق</strong></div>
+    <p>وصف التطبيق هنا. هذا هو التطبيق الذي يفعل كذا وكذا.</p>
+    <a class="download-button" href="رابط_التطبيق" download>تحميل التطبيق</a>
+</div>
 
-            links.forEach(link => {
-                const linkElement = document.createElement('a');
-                linkElement.className = 'link-item';
-                linkElement.href = link.url;
-                linkElement.style.color = link.color;
-                linkElement.innerText = link.text || "رابط جديد";
-                contentContainer.appendChild(linkElement);
-            });
-
-            files.forEach(file => {
-                const fileElement = document.createElement('a');
-                fileElement.className = 'link-item';
-                fileElement.href = file.url;
-                fileElement.innerText = file.text || "ملف جديد";
-                fileElement.download = true;
-                contentContainer.appendChild(fileElement);
-            });
-        }
-
-        function searchContent() {
-            const query = document.getElementById('search').value.toLowerCase();
-            const allContent = [...links, ...files];
-            const filteredContent = allContent.filter(item => 
-                (item.text && item.text.toLowerCase().includes(query)) || 
-                (item.url && item.url.toLowerCase().includes(query))
-            );
-
-            contentContainer.innerHTML = '';
-            notFoundMessage.style.display = filteredContent.length === 0 ? 'block' : 'none';
-
-            filteredContent.forEach(item => {
-                const element = document.createElement('a');
-                element.className = 'link-item';
-                element.href = item.url;
-                element.innerText = item.text || "ملف جديد";
-                element.download = item.download ? true : undefined;
-                contentContainer.appendChild(element);
-            });
-        }
-
-        displayContent();
-    </script>
+<!-- يمكنك تكرار الكود أعلاه لإضافة المزيد من التطبيقات -->
 
 </body>
 </html>
