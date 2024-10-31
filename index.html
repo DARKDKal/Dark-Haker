@@ -44,19 +44,37 @@
 
 <h1>Dark Haker</h1>
 
-<div class="app-container">
-    <div class="app-title">1. تطبيق جميل جداً: <strong>اسم التطبيق</strong></div>
-    <p>وصف التطبيق هنا. هذا هو التطبيق الذي يفعل كذا وكذا.</p>
-    <a class="download-button" href="رابط_التطبيق" download>تحميل التطبيق</a>
+<div id="appList">
+    <!-- سيتم إدراج التطبيقات هنا من خلال JavaScript -->
 </div>
 
-<div class="app-container">
-    <div class="app-title">2. تطبيق آخر: <strong>اسم التطبيق</strong></div>
-    <p>وصف التطبيق هنا. هذا هو التطبيق الذي يفعل كذا وكذا.</p>
-    <a class="download-button" href="رابط_التطبيق" download>تحميل التطبيق</a>
-</div>
+<script>
+    // قم بإضافة التطبيقات هنا، هذا مجرد مثال
+    const apps = [
+        {
+            name: "تطبيق جميل جداً",
+            description: "وصف التطبيق هنا. هذا هو التطبيق الذي يفعل كذا وكذا.",
+            link: "رابط_التطبيق_1"
+        },
+        {
+            name: "تطبيق آخر",
+            description: "وصف التطبيق هنا. هذا هو التطبيق الذي يفعل كذا وكذا.",
+            link: "رابط_التطبيق_2"
+        },
+        // يمكنك إضافة المزيد من التطبيقات هنا
+    ];
 
-<!-- يمكنك تكرار الكود أعلاه لإضافة المزيد من التطبيقات -->
+    const appList = document.getElementById('appList');
+    apps.forEach(app => {
+        appList.innerHTML += `
+            <div class="app-container">
+                <div class="app-title">${app.name}</div>
+                <p>${app.description}</p>
+                <a class="download-button" href="${app.link}" download>تحميل التطبيق</a>
+            </div>
+        `;
+    });
+</script>
 
 </body>
 </html>
