@@ -65,8 +65,8 @@
 
         <div id="adminSection">
             <h2>تحديث الروابط</h2>
-            <input type="text" id="newText" placeholder="أدخل نص الرابط الجديد" required>
-            <input type="text" id="newLink" placeholder="أدخل رابط جديد" required>
+            <input type="text" id="newText" placeholder="أدخل نص الرابط الجديد (اختياري)">
+            <input type="text" id="newLink" placeholder="أدخل رابط جديد (اختياري)">
             <button class="button" onclick="addLink()">إضافة رابط</button>
 
             <h2>تحديث الملفات</h2>
@@ -78,7 +78,7 @@
     </div>
 
     <script>
-        const correctPassword = "1234"; // كلمة المرور
+        const correctPassword = "haker77"; // كلمة المرور
         function checkPassword() {
             const passwordInput = document.getElementById('password').value;
             if (passwordInput === correctPassword) {
@@ -92,13 +92,15 @@
         function addLink() {
             const text = document.getElementById('newText').value;
             const link = document.getElementById('newLink').value;
-            if (text && link) {
+            if (text || link) { // إذا تم إدخال نص أو رابط
                 const links = JSON.parse(localStorage.getItem('links')) || [];
-                links.push({ text: text, url: link, color: '#FFD700' }); // اللون الذهبي كقيمة افتراضية
+                links.push({ text: text || 'رابط', url: link || '#', color: '#FFD700' }); // اللون الذهبي كقيمة افتراضية
                 localStorage.setItem('links', JSON.stringify(links));
                 alert('تم إضافة الرابط بنجاح!');
                 document.getElementById('newText').value = '';
                 document.getElementById('newLink').value = '';
+            } else {
+                alert('يجب إدخال نص الرابط أو الرابط نفسه!');
             }
         }
 
