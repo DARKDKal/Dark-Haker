@@ -55,7 +55,7 @@
     </style>
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js";
-        import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-database.js";
+        import { getDatabase, ref, set, onValue, remove } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-database.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBImnR0ZRlIElw-Ao-ssi8CjscqiLm6Wa8",
@@ -71,7 +71,7 @@
         // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const database = getDatabase(app);
-        
+
         // تحميل التطبيقات من Firebase
         function loadApps() {
             const appsRef = ref(database, 'apps');
@@ -129,12 +129,24 @@
 
         function removeApp(appId) {
             const appRef = ref(database, 'apps/' + appId);
-            set(appRef, null).then(() => {
+            remove(appRef).then(() => {
                 loadApps(); // تحديث القائمة بعد الحذف
+            }).catch((error) => {
+                console.error("Error removing app: ", error);
             });
         }
 
-        window.onload = loadApps; // تحميل التطبيقات عند فتح الصفحة
+        function login() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            if (username === 'DarkHaker' && password === 'Dark777') {
+                document.getElementById('loginForm').classList.add('hidden');
+                document.getElementById('adminPage').classList.remove('hidden');
+                loadApps(); // تحميل التطبيقات بعد تسجيل الدخول
+            } else {
+                alert("اسم المستخدم أو كلمة المرور غير صحيحة.");
+            }
+        }
     </script>
 </head>
 <body>
