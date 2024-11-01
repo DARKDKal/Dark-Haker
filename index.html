@@ -58,28 +58,3 @@
         // قراءة التطبيقات من Firebase
         const appsRef = ref(database, 'apps');
         onValue(appsRef, (snapshot) => {
-            appList.innerHTML = '';
-            snapshot.forEach((childSnapshot) => {
-                const appData = childSnapshot.val();
-                const appItem = document.createElement('div');
-                appItem.className = 'app-item';
-                appItem.innerHTML = `
-                    <strong>${appData.name}</strong><br>
-                    <span>${appData.description}</span><br>
-                    ${appData.files.map((file, index) => `<a href="${file}" target="_blank">تحميل ملف ${index + 1}</a>`).join('<br>')}
-                `;
-                appList.appendChild(appItem);
-            });
-        });
-    </script>
-</head>
-<body>
-
-<h1>Dark Haker</h1>
-
-<div class="app-list" id="appList">
-    <!-- التطبيقات ستظهر هنا -->
-</div>
-
-</body>
-</html>
