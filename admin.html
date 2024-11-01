@@ -4,8 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>صفحة الإدارة</title>
-    <script src="https://www.gstatic.com/firebasejs/9.1.2/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.1.2/firebase-database.js"></script>
     <style>
         body {
             background-color: #121212;
@@ -18,6 +16,19 @@
             text-align: center;
             color: gold;
         }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #444;
+            padding: 10px;
+            text-align: right;
+        }
+        th {
+            background-color: #1e1e1e;
+        }
         .button {
             background-color: #444;
             color: #ffffff;
@@ -26,14 +37,93 @@
             padding: 10px;
             cursor: pointer;
         }
-        .upload-section {
-            margin-bottom: 20px;
-        }
         .password-section {
             text-align: center;
             margin-bottom: 20px;
         }
     </style>
+    <!-- تضمين مكتبات Firebase -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js";
+        import { getDatabase, ref, set, onValue, remove } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBImnR0ZRlIElw-Ao-ssi8CjscqiLm6Wa8",
+            authDomain: "dark-haker.firebaseapp.com",
+            databaseURL: "https://dark-haker-default-rtdb.firebaseio.com",
+            projectId: "dark-haker",
+            storageBucket: "dark-haker.firebasestorage.app",
+            messagingSenderId: "186612807780",
+            appId: "1:186612807780:web:479f0949b59e8fcc584771",
+            measurementId: "G-96JW44RLYE"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+
+        let apps = [];
+
+        function displayApps() {
+            const appList = document.getElementById('appList');
+            appList.innerHTML = '';
+            apps.forEach((app, index) => {
+                const newRow = document.createElement('tr');
+                newRow.innerHTML = `
+                    <td>${app.name}</td>
+                    <td>${app.description}</td>
+                    <td>${app.link}</td>
+                    <td><button class="button" onclick="deleteApp('${app.id}')">حذف</button></td>
+                `;
+                appList.appendChild(newRow);
+            });
+        }
+
+        function addApp(name, description, link) {
+            const newApp = { id: Date.now().toString(), name, description, link };
+            apps.push(newApp);
+            set(ref(database, 'apps/' + newApp.id), newApp);
+            displayApps();
+        }
+
+        function deleteApp(id) {
+            apps = apps.filter(app => app.id !== id);
+            remove(ref(database, 'apps/' + id));
+            displayApps();
+        }
+
+        // تحقق من كلمة المرور
+        document.getElementById('submitPassword').addEventListener('click', function() {
+            const inputPassword = document.getElementById('passwordInput').value;
+            if (inputPassword === "Dark77") {
+                document.getElementById('passwordSection').style.display = 'none';
+                document.getElementById('adminContent').style.display = 'block';
+
+                // قراءة البيانات من Firebase
+                const appsRef = ref(database, 'apps');
+                onValue(appsRef, (snapshot) => {
+                    apps = [];
+                    snapshot.forEach((childSnapshot) => {
+                        const appData = childSnapshot.val();
+                        apps.push(appData);
+                    });
+                    displayApps();
+                });
+            } else {
+                alert('كلمة المرور غير صحيحة!');
+            }
+        });
+
+        document.getElementById('addAppButton').addEventListener('click', function() {
+            const name = document.getElementById('appName').value;
+            const description = document.getElementById('appDescription').value;
+            const link = document.getElementById('appLink').value;
+            addApp(name, description, link);
+            document.getElementById('appName').value = '';
+            document.getElementById('appDescription').value = '';
+            document.getElementById('appLink').value = '';
+        });
+    </script>
 </head>
 <body>
 
@@ -45,11 +135,10 @@
 
 <div id="adminContent" style="display: none;">
     <h2>صفحة الإدارة</h2>
-
-    <div class="upload-section">
+    <div>
         <h3>إضافة تطبيق جديد</h3>
         <input type="text" id="appName" placeholder="اسم التطبيق" required>
-        <textarea id="appDescription" placeholder="وصف التطبيق" required></textarea>
+        <input type="text" id="appDescription" placeholder="وصف التطبيق" required>
         <input type="text" id="appLink" placeholder="رابط التطبيق" required>
         <button class="button" id="addAppButton">إضافة التطبيق</button>
     </div>
@@ -59,6 +148,7 @@
             <tr>
                 <th>اسم التطبيق</th>
                 <th>الوصف</th>
+                <th>الرابط</th>
                 <th>الإجراء</th>
             </tr>
         </thead>
@@ -68,8 +158,5 @@
     </table>
 </div>
 
-<script>
-    // Firebase configuration
-    const firebaseConfig = {
-        apiKey: "AIzaSyBImnR0ZRlIElw-Ao-ssi8CjscqiLm6Wa8",
-        auth
+</body>
+</html>
