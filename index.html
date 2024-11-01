@@ -26,13 +26,11 @@
             border-radius: 5px;
         }
         a {
-            color: #ff0000; /* لون زر التحميل أحمر */
+            color: #ff4757; /* لون الزر أحمر */
             text-decoration: none;
-            display: block; /* ليظهر كل زر في سطر منفصل */
-            margin: 5px 0;
         }
         a:hover {
-            text-decoration: underline; /* تأثير عند التمرير فوق الرابط */
+            text-decoration: underline;
         }
     </style>
     <!-- تضمين مكتبات Firebase -->
@@ -68,15 +66,8 @@
                 appItem.innerHTML = `
                     <strong>${appData.name}</strong><br>
                     <span>${appData.description}</span><br>
+                    ${appData.files.map((file, index) => `<a href="${file}" target="_blank">تحميل ملف ${index + 1}</a>`).join('<br>')}
                 `;
-                
-                // إضافة أزرار التحميل بناءً على عدد الملفات
-                if (appData.files && appData.files.length > 0) {
-                    appData.files.forEach((file, index) => {
-                        appItem.innerHTML += `<a href="${file}" target="_blank">تحميل ${index + 1}</a>`;
-                    });
-                }
-
                 appList.appendChild(appItem);
             });
         });
