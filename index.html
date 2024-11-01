@@ -33,11 +33,25 @@
             text-decoration: underline;
         }
     </style>
-    <!-- تضمين مكتبات Firebase -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js";
         import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-database.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBImnR0ZRlIElw-Ao-ssi8CjscqiLm6Wa8",
-            authDomain:
+            authDomain: "dark-haker.firebaseapp.com",
+            databaseURL: "https://dark-haker-default-rtdb.firebaseio.com",
+            projectId: "dark-haker",
+            storageBucket: "dark-haker.firebasestorage.app",
+            messagingSenderId: "186612807780",
+            appId: "1:186612807780:web:479f0949b59e8fcc584771",
+            measurementId: "G-96JW44RLYE"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+
+        const appList = document.getElementById('appList');
+
+        // قراءة التطبيقات
