@@ -4,10 +4,79 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dark Haker</title>
-    <script type="module" src="main.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.1.2/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.1.2/firebase-database.js"></script>
+    <style>
+        body {
+            background-color: #121212;
+            color: #ffffff;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: gold;
+        }
+        .app-list {
+            margin: 20px 0;
+        }
+        .app-item {
+            margin: 10px 0;
+            padding: 10px;
+            background-color: #1e1e1e;
+            border-radius: 5px;
+        }
+        a {
+            color: #00ff00;
+            text-decoration: none;
+        }
+    </style>
 </head>
 <body>
-    <h1>Dark Haker</h1>
-    <div id="appList"></div>
+
+<h1>Dark Haker</h1>
+
+<div class="app-list" id="appList">
+    <!-- التطبيقات ستظهر هنا -->
+</div>
+
+<script>
+    // Firebase configuration
+    const firebaseConfig = {
+        apiKey: "AIzaSyBImnR0ZRlIElw-Ao-ssi8CjscqiLm6Wa8",
+        authDomain: "dark-haker.firebaseapp.com",
+        databaseURL: "https://dark-haker-default-rtdb.firebaseio.com",
+        projectId: "dark-haker",
+        storageBucket: "dark-haker.firebasestorage.app",
+        messagingSenderId: "186612807780",
+        appId: "1:186612807780:web:479f0949b59e8fcc584771",
+        measurementId: "G-96JW44RLYE"
+    };
+
+    // Initialize Firebase
+    const app = firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+
+    const appList = document.getElementById('appList');
+
+    function displayApps(snapshot) {
+        appList.innerHTML = '';
+        snapshot.forEach((childSnapshot) => {
+            const app = childSnapshot.val();
+            const appItem = document.createElement('div');
+            appItem.className = 'app-item';
+            appItem.innerHTML = `
+                <strong>${app.name}</strong><br>
+                <span>${app.description}</span><br>
+                <a href="${app.link}" target="_blank">تحميل</a>
+            `;
+            appList.appendChild(appItem);
+        });
+    }
+
+    database.ref('apps').on('value', displayApps);
+</script>
+
 </body>
 </html>
