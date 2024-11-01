@@ -91,13 +91,32 @@
         </table>
     </div>
 
-    <script>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js";
+        import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBImnR0ZRlIElw-Ao-ssi8CjscqiLm6Wa8",
+            authDomain: "dark-haker.firebaseapp.com",
+            databaseURL: "https://dark-haker-default-rtdb.firebaseio.com",
+            projectId: "dark-haker",
+            storageBucket: "dark-haker.firebasestorage.app",
+            messagingSenderId: "186612807780",
+            appId: "1:186612807780:web:479f0949b59e8fcc584771",
+            measurementId: "G-96JW44RLYE"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+
         function login() {
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
             if (username === 'DarkHaker' && password === 'Dark777') {
                 document.getElementById('loginForm').classList.add('hidden');
                 document.getElementById('adminPage').classList.remove('hidden');
+                loadApps(); // تحميل التطبيقات عند الدخول
             } else {
                 alert("اسم المستخدم أو كلمة المرور غير صحيحة.");
             }
@@ -111,22 +130,20 @@
                 .filter(file => file); // إزالة الملفات الفارغة
 
             if (appName && appDescription && files.length > 0) {
-                const appList = document.getElementById('appList');
-                const appItem = document.createElement('tr');
-                
-                // بناء قائمة الملفات مع أسماء الأزرار
-                const fileLinks = files.map((file, index) => {
-                    const fileButtonName = prompt(`أدخل اسم زر التحميل للملف ${index + 1}:`, `تحميل ${index + 1}`);
-                    return `<a href="${URL.createObjectURL(file)}" target="_blank">${fileButtonName || `تحميل ${index + 1}`}</a>`;
-                }).join("<br/>");
+                const appData = {
+                    name: appName,
+                    description: appDescription,
+                    files: []
+                };
 
-                appItem.innerHTML = `
-                    <td>${appName}</td>
-                    <td>${appDescription}</td>
-                    <td>${fileLinks}</td>
-                    <td><button onclick="removeApp(this)">حذف</button></td>
-                `;
-                appList.appendChild(appItem);
+                files.forEach(file => {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        appData.files.push(e.target.result); // حفظ بيانات الملف
+                        saveAppToDatabase(appData); // حفظ التطبيق في قاعدة البيانات
+                    };
+                    reader.readAsDataURL(file); // قراءة الملف كـ URL
+                });
 
                 // إعادة تعيين الحقول
                 document.getElementById('appName').value = '';
@@ -137,9 +154,51 @@
             }
         }
 
-        function removeApp(button) {
-            const row = button.closest('tr');
-            row.remove();
+        function saveAppToDatabase(appData) {
+            const appsRef = ref(database, 'apps/' + Date.now());
+            set(appsRef, appData)
+                .then(() => {
+                    alert("تم إضافة التطبيق بنجاح.");
+                    loadApps(); // إعادة تحميل التطبيقات بعد الإضافة
+                })
+                .catch((error) => {
+                    console.error("خطأ في إضافة التطبيق: ", error);
+                });
+        }
+
+        function loadApps() {
+            const appsRef = ref(database, 'apps');
+            onValue(appsRef, (snapshot) => {
+                const appList = document.getElementById('appList');
+                appList.innerHTML = '';
+                snapshot.forEach((childSnapshot) => {
+                    const appData = childSnapshot.val();
+                    const appItem = document.createElement('tr');
+                    
+                    // بناء قائمة الملفات مع أسماء الأزرار
+                    const fileLinks = appData.files.map((file, index) => `<a href="${file}" target="_blank">تحميل ملف ${index + 1}</a>`).join("<br/>");
+
+                    appItem.innerHTML = `
+                        <td>${appData.name}</td>
+                        <td>${appData.description}</td>
+                        <td>${fileLinks}</td>
+                        <td><button onclick="removeApp('${childSnapshot.key}')">حذف</button></td>
+                    `;
+                    appList.appendChild(appItem);
+                });
+            });
+        }
+
+        function removeApp(appKey) {
+            const appRef = ref(database, 'apps/' + appKey);
+            set(appRef, null) // حذف التطبيق
+                .then(() => {
+                    alert("تم حذف التطبيق بنجاح.");
+                    loadApps(); // إعادة تحميل التطبيقات بعد الحذف
+                })
+                .catch((error) => {
+                    console.error("خطأ في حذف التطبيق: ", error);
+                });
         }
     </script>
 </body>
