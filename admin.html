@@ -53,89 +53,6 @@
             background-color: #34495e;
         }
     </style>
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js";
-        import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-database.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyBImnR0ZRlIElw-Ao-ssi8CjscqiLm6Wa8",
-            authDomain: "dark-haker.firebaseapp.com",
-            databaseURL: "https://dark-haker-default-rtdb.firebaseio.com",
-            projectId: "dark-haker",
-            storageBucket: "dark-haker.firebasestorage.app",
-            messagingSenderId: "186612807780",
-            appId: "1:186612807780:web:479f0949b59e8fcc584771",
-            measurementId: "G-96JW44RLYE"
-        };
-
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const database = getDatabase(app);
-        
-        // تحميل التطبيقات من Firebase
-        function loadApps() {
-            const appsRef = ref(database, 'apps');
-            onValue(appsRef, (snapshot) => {
-                const appList = document.getElementById('appList');
-                appList.innerHTML = '';
-                snapshot.forEach((childSnapshot) => {
-                    const appData = childSnapshot.val();
-                    const appItem = document.createElement('tr');
-                    
-                    // بناء قائمة الملفات مع أسماء الأزرار
-                    const fileLinks = appData.files.map((file, index) => {
-                        return `<a href="${file}" target="_blank">تحميل ${index + 1}</a>`;
-                    }).join("<br/>");
-
-                    appItem.innerHTML = `
-                        <td>${appData.name}</td>
-                        <td>${appData.description}</td>
-                        <td>${fileLinks}</td>
-                        <td><button onclick="removeApp('${childSnapshot.key}')">حذف</button></td>
-                    `;
-                    appList.appendChild(appItem);
-                });
-            });
-        }
-
-        function addApp() {
-            const appName = document.getElementById('appName').value;
-            const appDescription = document.getElementById('appDescription').value;
-            const files = Array.from(document.querySelectorAll('#fileInputs input[type="file"]'))
-                .map(input => input.files[0])
-                .filter(file => file); // إزالة الملفات الفارغة
-
-            if (appName && appDescription && files.length > 0) {
-                const fileUrls = files.map(file => URL.createObjectURL(file));
-                const newAppRef = ref(database, 'apps/' + Date.now()); // استخدام timestamp كمعرف فريد
-
-                set(newAppRef, {
-                    name: appName,
-                    description: appDescription,
-                    files: fileUrls
-                }).then(() => {
-                    loadApps(); // تحديث القائمة
-                    // إعادة تعيين الحقول
-                    document.getElementById('appName').value = '';
-                    document.getElementById('appDescription').value = '';
-                    document.querySelectorAll('#fileInputs input[type="file"]').forEach(input => input.value = '');
-                }).catch((error) => {
-                    console.error("Error adding app: ", error);
-                });
-            } else {
-                alert("يرجى ملء جميع الحقول وإضافة ملف واحد على الأقل.");
-            }
-        }
-
-        function removeApp(appId) {
-            const appRef = ref(database, 'apps/' + appId);
-            set(appRef, null).then(() => {
-                loadApps(); // تحديث القائمة بعد الحذف
-            });
-        }
-
-        window.onload = loadApps; // تحميل التطبيقات عند فتح الصفحة
-    </script>
 </head>
 <body>
     <div id="loginForm">
@@ -173,5 +90,57 @@
             </tbody>
         </table>
     </div>
+
+    <script>
+        function login() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            if (username === 'DarkHaker' && password === 'Dark777') {
+                document.getElementById('loginForm').classList.add('hidden');
+                document.getElementById('adminPage').classList.remove('hidden');
+            } else {
+                alert("اسم المستخدم أو كلمة المرور غير صحيحة.");
+            }
+        }
+
+        function addApp() {
+            const appName = document.getElementById('appName').value;
+            const appDescription = document.getElementById('appDescription').value;
+            const files = Array.from(document.querySelectorAll('#fileInputs input[type="file"]'))
+                .map(input => input.files[0])
+                .filter(file => file); // إزالة الملفات الفارغة
+
+            if (appName && appDescription && files.length > 0) {
+                const appList = document.getElementById('appList');
+                const appItem = document.createElement('tr');
+                
+                // بناء قائمة الملفات مع أسماء الأزرار
+                const fileLinks = files.map((file, index) => {
+                    const fileButtonName = prompt(`أدخل اسم زر التحميل للملف ${index + 1}:`, `تحميل ${index + 1}`);
+                    return `<a href="${URL.createObjectURL(file)}" target="_blank">${fileButtonName || `تحميل ${index + 1}`}</a>`;
+                }).join("<br/>");
+
+                appItem.innerHTML = `
+                    <td>${appName}</td>
+                    <td>${appDescription}</td>
+                    <td>${fileLinks}</td>
+                    <td><button onclick="removeApp(this)">حذف</button></td>
+                `;
+                appList.appendChild(appItem);
+
+                // إعادة تعيين الحقول
+                document.getElementById('appName').value = '';
+                document.getElementById('appDescription').value = '';
+                document.querySelectorAll('#fileInputs input[type="file"]').forEach(input => input.value = '');
+            } else {
+                alert("يرجى ملء جميع الحقول وإضافة ملف واحد على الأقل.");
+            }
+        }
+
+        function removeApp(button) {
+            const row = button.closest('tr');
+            row.remove();
+        }
+    </script>
 </body>
 </html>
