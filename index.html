@@ -33,6 +33,7 @@
             text-decoration: underline;
         }
     </style>
+    <!-- تضمين مكتبات Firebase -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js";
         import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-database.js";
@@ -54,4 +55,6 @@
 
         const appList = document.getElementById('appList');
 
-        // قراءة التطبيقات
+        // قراءة التطبيقات من Firebase
+        const appsRef = ref(database, 'apps');
+        onValue(appsRef, (snapshot) => {
