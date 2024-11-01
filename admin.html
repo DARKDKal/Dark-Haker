@@ -75,6 +75,7 @@
         </div>
 
         <button onclick="addApp()">إضافة تطبيق</button>
+        <button onclick="saveApps()">حفظ التعديلات</button>
         
         <table>
             <thead>
@@ -98,6 +99,7 @@
             if (username === 'DarkHaker' && password === 'Dark777') {
                 document.getElementById('loginForm').classList.add('hidden');
                 document.getElementById('adminPage').classList.remove('hidden');
+                loadApps(); // تحميل التطبيقات عند تسجيل الدخول
             } else {
                 alert("اسم المستخدم أو كلمة المرور غير صحيحة.");
             }
@@ -135,6 +137,42 @@
             } else {
                 alert("يرجى ملء جميع الحقول وإضافة ملف واحد على الأقل.");
             }
+        }
+
+        function saveApps() {
+            const apps = [];
+            const rows = document.querySelectorAll('#appList tr');
+
+            rows.forEach(row => {
+                const appName = row.children[0].innerText;
+                const appDescription = row.children[1].innerText;
+                const files = row.children[2].innerHTML; // حفظ روابط الملفات
+
+                apps.push({ appName, appDescription, files });
+            });
+
+            localStorage.setItem('apps', JSON.stringify(apps));
+            alert("تم حفظ التعديلات بنجاح.");
+
+            // تحميل التطبيقات بعد حفظها
+            loadApps();
+        }
+
+        function loadApps() {
+            const apps = JSON.parse(localStorage.getItem('apps')) || [];
+            const appList = document.getElementById('appList');
+            appList.innerHTML = ''; // مسح القائمة الحالية
+
+            apps.forEach(app => {
+                const appItem = document.createElement('tr');
+                appItem.innerHTML = `
+                    <td>${app.appName}</td>
+                    <td>${app.appDescription}</td>
+                    <td>${app.files}</td>
+                    <td><button onclick="removeApp(this)">حذف</button></td>
+                `;
+                appList.appendChild(appItem);
+            });
         }
 
         function removeApp(button) {
