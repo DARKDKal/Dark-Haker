@@ -114,7 +114,9 @@
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
             if (username === 'DarkHaker' && password === 'Dark777') {
+                // إخفاء نموذج تسجيل الدخول
                 document.getElementById('loginForm').classList.add('hidden');
+                // عرض صفحة الإدارة
                 document.getElementById('adminPage').classList.remove('hidden');
                 loadApps(); // تحميل التطبيقات عند الدخول
             } else {
