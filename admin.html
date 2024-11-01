@@ -49,12 +49,9 @@
         th {
             background-color: #34495e;
         }
-        #adminPage {
-            display: none; /* إخفاء محتوى الصفحة حتى يتم التحقق من كلمة السر */
-        }
     </style>
 </head>
-<body onload="checkPassword()">
+<body>
     <div id="adminPage">
         <h1>صفحة الإدارة</h1>
         <input type="text" id="appName" placeholder="اسم التطبيق" />
@@ -102,16 +99,6 @@
         // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const database = getDatabase(app);
-
-        function checkPassword() {
-            const password = prompt("من فضلك أدخل كلمة السر:");
-            if (password !== "Dark777") {
-                alert("كلمة السر غير صحيحة!"); // رسالة إذا كانت كلمة السر خاطئة
-                window.location.href = "https://www.example.com"; // إعادة التوجيه إلى صفحة أخرى
-            } else {
-                document.getElementById('adminPage').style.display = 'block'; // إظهار محتوى الصفحة إذا كانت كلمة السر صحيحة
-            }
-        }
 
         function addApp() {
             const appName = document.getElementById('appName').value;
