@@ -39,21 +39,38 @@
     <!-- التطبيقات ستظهر هنا -->
 </div>
 
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js"></script>
 <script>
-    const appList = document.getElementById('appList');
-    const apps = JSON.parse(localStorage.getItem('apps')) || [];
+    // إعداد Firebase
+    const firebaseConfig = {
+        apiKey: "AIzaSyBImnR0ZRlIElw-Ao-ssi8CjscqiLm6Wa8",
+        authDomain: "dark-haker.firebaseapp.com",
+        databaseURL: "https://dark-haker-default-rtdb.firebaseio.com",
+        projectId: "dark-haker",
+        storageBucket: "dark-haker.firebasestorage.app",
+        messagingSenderId: "186612807780",
+        appId: "1:186612807780:web:479f0949b59e8fcc584771",
+        measurementId: "G-96JW44RLYE"
+    };
+    const app = firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
 
     function displayApps() {
-        appList.innerHTML = '';
-        apps.forEach(app => {
-            const appItem = document.createElement('div');
-            appItem.className = 'app-item';
-            appItem.innerHTML = `
-                <strong>${app.name}</strong><br>
-                <span>${app.description}</span><br>
-                <a href="${app.link}" target="_blank">تحميل</a>
-            `;
-            appList.appendChild(appItem);
+        const appList = document.getElementById('appList');
+        database.ref('apps').once('value').then(snapshot => {
+            appList.innerHTML = '';
+            snapshot.forEach(childSnapshot => {
+                const app = childSnapshot.val();
+                const appItem = document.createElement('div');
+                appItem.className = 'app-item';
+                appItem.innerHTML = `
+                    <strong>${app.name}</strong><br>
+                    <span>${app.description}</span><br>
+                    <a href="${app.link}" target="_blank">تحميل</a>
+                `;
+                appList.appendChild(appItem);
+            });
         });
     }
 
