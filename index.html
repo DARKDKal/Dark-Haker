@@ -4,8 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dark Haker</title>
-    <script src="https://www.gstatic.com/firebasejs/9.1.2/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.1.2/firebase-database.js"></script>
     <style>
         body {
             background-color: #121212;
@@ -32,6 +30,45 @@
             text-decoration: none;
         }
     </style>
+    <!-- تضمين مكتبات Firebase -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js";
+        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBImnR0ZRlIElw-Ao-ssi8CjscqiLm6Wa8",
+            authDomain: "dark-haker.firebaseapp.com",
+            databaseURL: "https://dark-haker-default-rtdb.firebaseio.com",
+            projectId: "dark-haker",
+            storageBucket: "dark-haker.firebasestorage.app",
+            messagingSenderId: "186612807780",
+            appId: "1:186612807780:web:479f0949b59e8fcc584771",
+            measurementId: "G-96JW44RLYE"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+
+        const appList = document.getElementById('appList');
+
+        // قراءة التطبيقات من Firebase
+        const appsRef = ref(database, 'apps');
+        onValue(appsRef, (snapshot) => {
+            appList.innerHTML = '';
+            snapshot.forEach((childSnapshot) => {
+                const appData = childSnapshot.val();
+                const appItem = document.createElement('div');
+                appItem.className = 'app-item';
+                appItem.innerHTML = `
+                    <strong>${appData.name}</strong><br>
+                    <span>${appData.description}</span><br>
+                    <a href="${appData.link}" target="_blank">تحميل</a>
+                `;
+                appList.appendChild(appItem);
+            });
+        });
+    </script>
 </head>
 <body>
 
@@ -40,43 +77,6 @@
 <div class="app-list" id="appList">
     <!-- التطبيقات ستظهر هنا -->
 </div>
-
-<script>
-    // Firebase configuration
-    const firebaseConfig = {
-        apiKey: "AIzaSyBImnR0ZRlIElw-Ao-ssi8CjscqiLm6Wa8",
-        authDomain: "dark-haker.firebaseapp.com",
-        databaseURL: "https://dark-haker-default-rtdb.firebaseio.com",
-        projectId: "dark-haker",
-        storageBucket: "dark-haker.firebasestorage.app",
-        messagingSenderId: "186612807780",
-        appId: "1:186612807780:web:479f0949b59e8fcc584771",
-        measurementId: "G-96JW44RLYE"
-    };
-
-    // Initialize Firebase
-    const app = firebase.initializeApp(firebaseConfig);
-    const database = firebase.database();
-
-    const appList = document.getElementById('appList');
-
-    function displayApps(snapshot) {
-        appList.innerHTML = '';
-        snapshot.forEach((childSnapshot) => {
-            const app = childSnapshot.val();
-            const appItem = document.createElement('div');
-            appItem.className = 'app-item';
-            appItem.innerHTML = `
-                <strong>${app.name}</strong><br>
-                <span>${app.description}</span><br>
-                <a href="${app.link}" target="_blank">تحميل</a>
-            `;
-            appList.appendChild(appItem);
-        });
-    }
-
-    database.ref('apps').on('value', displayApps);
-</script>
 
 </body>
 </html>
