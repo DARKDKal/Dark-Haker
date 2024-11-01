@@ -15,9 +15,6 @@
             text-align: center;
             color: #6c757d; /* لون العنوان سكني */
         }
-        .hidden {
-            display: none;
-        }
         input[type="text"], input[type="password"], textarea {
             margin: 5px 0;
             padding: 10px;
@@ -52,16 +49,13 @@
         th {
             background-color: #34495e;
         }
+        #adminPage {
+            display: none; /* إخفاء محتوى الصفحة حتى يتم التحقق من كلمة السر */
+        }
     </style>
 </head>
-<body>
-    <div id="loginPrompt">
-        <h1>يرجى إدخال كلمة المرور</h1>
-        <input type="password" id="password" placeholder="كلمة المرور" />
-        <button onclick="checkPassword()">دخول</button>
-    </div>
-
-    <div id="adminPage" class="hidden">
+<body onload="checkPassword()">
+    <div id="adminPage">
         <h1>صفحة الإدارة</h1>
         <input type="text" id="appName" placeholder="اسم التطبيق" />
         <textarea id="appDescription" placeholder="وصف التطبيق" rows="4"></textarea>
@@ -110,14 +104,12 @@
         const database = getDatabase(app);
 
         function checkPassword() {
-            const password = document.getElementById('password').value;
-            if (password === 'Dark777') {
-                document.getElementById('loginPrompt').classList.add('hidden');
-                document.getElementById('adminPage').classList.remove('hidden');
-                loadApps(); // تحميل التطبيقات عند الدخول
+            const password = prompt("من فضلك أدخل كلمة السر:");
+            if (password !== "Dark777") {
+                alert("كلمة السر غير صحيحة!"); // رسالة إذا كانت كلمة السر خاطئة
+                window.location.href = "https://www.example.com"; // إعادة التوجيه إلى صفحة أخرى
             } else {
-                alert("كلمة المرور غير صحيحة.");
-                document.getElementById('password').value = ''; // مسح حقل كلمة المرور
+                document.getElementById('adminPage').style.display = 'block'; // إظهار محتوى الصفحة إذا كانت كلمة السر صحيحة
             }
         }
 
@@ -199,6 +191,9 @@
                     console.error("خطأ في حذف التطبيق: ", error);
                 });
         }
+
+        // تحميل التطبيقات عند فتح الصفحة
+        loadApps();
     </script>
 </body>
 </html>
