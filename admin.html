@@ -15,9 +15,6 @@
             text-align: center;
             color: #6c757d; /* لون العنوان سكني */
         }
-        .hidden {
-            display: none;
-        }
         input[type="text"], input[type="password"], textarea {
             margin: 5px 0;
             padding: 10px;
@@ -55,13 +52,6 @@
     </style>
 </head>
 <body>
-    <div id="loginForm">
-        <h1>تسجيل الدخول</h1>
-        <input type="text" id="username" placeholder="اسم المستخدم" />
-        <input type="password" id="password" placeholder="كلمة المرور" />
-        <button onclick="login()">دخول</button>
-    </div>
-
     <div id="adminPage" class="hidden">
         <h1>صفحة الإدارة</h1>
         <input type="text" id="appName" placeholder="اسم التطبيق" />
@@ -110,18 +100,14 @@
         const app = initializeApp(firebaseConfig);
         const database = getDatabase(app);
 
-        function login() {
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-            if (username === 'DarkHaker' && password === 'Dark777') {
-                // إخفاء نموذج تسجيل الدخول
-                document.getElementById('loginForm').classList.add('hidden');
-                // عرض صفحة الإدارة
-                document.getElementById('adminPage').classList.remove('hidden');
-                loadApps(); // تحميل التطبيقات عند الدخول
-            } else {
-                alert("اسم المستخدم أو كلمة المرور غير صحيحة.");
-            }
+        // طلب كلمة المرور قبل الدخول إلى صفحة الإدارة
+        const password = prompt("يرجى إدخال كلمة المرور:");
+
+        if (password === 'Dark777') {
+            document.getElementById('adminPage').classList.remove('hidden');
+            loadApps(); // تحميل التطبيقات عند الدخول
+        } else {
+            alert("كلمة المرور غير صحيحة.");
         }
 
         function addApp() {
