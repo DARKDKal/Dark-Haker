@@ -6,157 +6,97 @@
     <title>صفحة الإدارة</title>
     <style>
         body {
-            background-color: #121212;
-            color: #ffffff;
             font-family: Arial, sans-serif;
-            margin: 0;
+            background-color: #2c3e50;
+            color: #ecf0f1;
             padding: 20px;
-        }
-        h2 {
-            text-align: center;
-            color: gold;
         }
         table {
             width: 100%;
             border-collapse: collapse;
-            margin: 20px 0;
-        }
-        th, td {
-            border: 1px solid #444;
-            padding: 10px;
-            text-align: right;
-        }
-        th {
-            background-color: #1e1e1e;
-        }
-        .button {
-            background-color: #444;
-            color: #ffffff;
-            border: none;
-            border-radius: 4px;
-            padding: 10px;
-            cursor: pointer;
-        }
-        .password-section {
-            text-align: center;
             margin-bottom: 20px;
         }
+        th, td {
+            border: 1px solid #ecf0f1;
+            padding: 10px;
+            text-align: center;
+        }
+        th {
+            background-color: #34495e;
+        }
+        input[type="file"] {
+            background-color: #34495e;
+            color: #ecf0f1;
+            border: none;
+            padding: 5px;
+            cursor: pointer;
+        }
+        button {
+            background-color: #27ae60;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #219653;
+        }
     </style>
-    <!-- تضمين مكتبات Firebase -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js";
-        import { getDatabase, ref, set, onValue, remove } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-database.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyBImnR0ZRlIElw-Ao-ssi8CjscqiLm6Wa8",
-            authDomain: "dark-haker.firebaseapp.com",
-            databaseURL: "https://dark-haker-default-rtdb.firebaseio.com",
-            projectId: "dark-haker",
-            storageBucket: "dark-haker.firebasestorage.app",
-            messagingSenderId: "186612807780",
-            appId: "1:186612807780:web:479f0949b59e8fcc584771",
-            measurementId: "G-96JW44RLYE"
-        };
-
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const database = getDatabase(app);
-
-        let apps = [];
-
-        function displayApps() {
-            const appList = document.getElementById('appList');
-            appList.innerHTML = '';
-            apps.forEach((app, index) => {
-                const newRow = document.createElement('tr');
-                newRow.innerHTML = `
-                    <td>${app.name}</td>
-                    <td>${app.description}</td>
-                    <td>${app.link}</td>
-                    <td><button class="button" onclick="deleteApp('${app.id}')">حذف</button></td>
-                `;
-                appList.appendChild(newRow);
-            });
-        }
-
-        function addApp(name, description, link) {
-            const newApp = { id: Date.now().toString(), name, description, link };
-            apps.push(newApp);
-            set(ref(database, 'apps/' + newApp.id), newApp);
-            displayApps();
-        }
-
-        function deleteApp(id) {
-            apps = apps.filter(app => app.id !== id);
-            remove(ref(database, 'apps/' + id));
-            displayApps();
-        }
-
-        // تحقق من كلمة المرور
-        document.getElementById('submitPassword').addEventListener('click', function() {
-            const inputPassword = document.getElementById('passwordInput').value;
-            if (inputPassword === "Dark77") {
-                document.getElementById('passwordSection').style.display = 'none';
-                document.getElementById('adminContent').style.display = 'block';
-
-                // قراءة البيانات من Firebase
-                const appsRef = ref(database, 'apps');
-                onValue(appsRef, (snapshot) => {
-                    apps = [];
-                    snapshot.forEach((childSnapshot) => {
-                        const appData = childSnapshot.val();
-                        apps.push(appData);
-                    });
-                    displayApps();
-                });
-            } else {
-                alert('كلمة المرور غير صحيحة!');
-            }
-        });
-
-        document.getElementById('addAppButton').addEventListener('click', function() {
-            const name = document.getElementById('appName').value;
-            const description = document.getElementById('appDescription').value;
-            const link = document.getElementById('appLink').value;
-            addApp(name, description, link);
-            document.getElementById('appName').value = '';
-            document.getElementById('appDescription').value = '';
-            document.getElementById('appLink').value = '';
-        });
-    </script>
 </head>
 <body>
-
-<div class="password-section" id="passwordSection">
-    <h3>أدخل كلمة المرور للدخول إلى صفحة الإدارة</h3>
-    <input type="password" id="passwordInput" placeholder="كلمة المرور" required>
-    <button class="button" id="submitPassword">دخول</button>
-</div>
-
-<div id="adminContent" style="display: none;">
-    <h2>صفحة الإدارة</h2>
+    <h1>صفحة الإدارة</h1>
     <div>
-        <h3>إضافة تطبيق جديد</h3>
-        <input type="text" id="appName" placeholder="اسم التطبيق" required>
-        <input type="text" id="appDescription" placeholder="وصف التطبيق" required>
-        <input type="text" id="appLink" placeholder="رابط التطبيق" required>
-        <button class="button" id="addAppButton">إضافة التطبيق</button>
+        <table>
+            <thead>
+                <tr>
+                    <th>اسم الأمر</th>
+                    <th>الوصف</th>
+                    <th>الملف</th>
+                    <th>الإجراء</th>
+                </tr>
+            </thead>
+            <tbody id="appList">
+                <tr>
+                    <td>الأمر الأول</td>
+                    <td>وصف الأمر الأول</td>
+                    <td>
+                        <input type="file" accept=".pdf,.doc,.docx,.txt" />
+                    </td>
+                    <td>
+                        <button onclick="performAction()">تنفيذ</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>الأمر الثاني</td>
+                    <td>وصف الأمر الثاني</td>
+                    <td>
+                        <input type="file" accept=".pdf,.doc,.docx,.txt" />
+                    </td>
+                    <td>
+                        <button onclick="performAction()">تنفيذ</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>الأمر الثالث</td>
+                    <td>وصف الأمر الثالث</td>
+                    <td>
+                        <input type="file" accept=".pdf,.doc,.docx,.txt" />
+                    </td>
+                    <td>
+                        <button onclick="performAction()">تنفيذ</button>
+                    </td>
+                </tr>
+                <!-- يمكنك إضافة المزيد من الصفوف حسب الحاجة -->
+            </tbody>
+        </table>
     </div>
 
-    <table>
-        <thead>
-            <tr>
-                <th>اسم التطبيق</th>
-                <th>الوصف</th>
-                <th>الرابط</th>
-                <th>الإجراء</th>
-            </tr>
-        </thead>
-        <tbody id="appList">
-            <!-- هنا يتم إدراج التطبيقات -->
-        </tbody>
-    </table>
-</div>
-
+    <script>
+        function performAction() {
+            // هنا يمكنك إضافة الكود لمعالجة الإجراء المطلوب
+            alert("تم تنفيذ الإجراء بنجاح!");
+        }
+    </script>
 </body>
 </html>
