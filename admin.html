@@ -15,18 +15,12 @@
             text-align: center;
             color: #6c757d; /* لون العنوان سكني */
         }
-        .app-list {
-            margin: 20px 0;
+        .hidden {
+            display: none;
         }
-        .app-item {
-            margin: 10px 0;
-            padding: 10px;
-            background-color: #1e1e1e;
-            border-radius: 5px;
-        }
-        input[type="file"], input[type="text"], input[type="password"] {
+        input[type="text"], input[type="password"], textarea {
             margin: 5px 0;
-            padding: 5px;
+            padding: 10px;
             width: 95%;
             border: 1px solid #ecf0f1;
             border-radius: 5px;
@@ -45,8 +39,18 @@
         button:hover {
             background-color: #219653;
         }
-        .hidden {
-            display: none;
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ecf0f1;
+            padding: 10px;
+            text-align: right; /* محاذاة النص لليمين */
+        }
+        th {
+            background-color: #34495e;
         }
     </style>
 </head>
@@ -60,34 +64,31 @@
 
     <div id="adminPage" class="hidden">
         <h1>صفحة الإدارة</h1>
-        <div>
-            <table>
-                <thead>
-                    <tr>
-                        <th>اسم الأمر</th>
-                        <th>الوصف</th>
-                        <th>الملفات</th>
-                        <th>الإجراء</th>
-                    </tr>
-                </thead>
-                <tbody id="appList">
-                    <tr>
-                        <td>الأمر الأول</td>
-                        <td>وصف الأمر الأول</td>
-                        <td>
-                            <input type="file" accept=".pdf,.doc,.docx,.txt" />
-                            <input type="file" accept=".pdf,.doc,.docx,.txt" />
-                            <input type="file" accept=".pdf,.doc,.docx,.txt" />
-                            <input type="file" accept=".pdf,.doc,.docx,.txt" />
-                        </td>
-                        <td>
-                            <button onclick="performAction()">تنفيذ</button>
-                        </td>
-                    </tr>
-                    <!-- يمكنك إضافة المزيد من الصفوف حسب الحاجة -->
-                </tbody>
-            </table>
+        <input type="text" id="appName" placeholder="اسم التطبيق" />
+        <textarea id="appDescription" placeholder="وصف التطبيق" rows="4"></textarea>
+        
+        <div id="fileInputs">
+            <input type="file" accept=".pdf,.doc,.docx,.txt" />
+            <input type="file" accept=".pdf,.doc,.docx,.txt" />
+            <input type="file" accept=".pdf,.doc,.docx,.txt" />
+            <input type="file" accept=".pdf,.doc,.docx,.txt" />
         </div>
+
+        <button onclick="addApp()">إضافة تطبيق</button>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>اسم التطبيق</th>
+                    <th>الوصف</th>
+                    <th>الملفات</th>
+                    <th>الإجراء</th>
+                </tr>
+            </thead>
+            <tbody id="appList">
+                <!-- هنا يتم إدراج التطبيقات -->
+            </tbody>
+        </table>
     </div>
 
     <script>
@@ -102,9 +103,43 @@
             }
         }
 
-        function performAction() {
-            // هنا يمكنك إضافة الكود لمعالجة الإجراء المطلوب
-            alert("تم تنفيذ الإجراء بنجاح!");
+        function addApp() {
+            const appName = document.getElementById('appName').value;
+            const appDescription = document.getElementById('appDescription').value;
+            const files = Array.from(document.querySelectorAll('#fileInputs input[type="file"]'))
+                .map(input => input.files[0])
+                .filter(file => file); // إزالة الملفات الفارغة
+
+            if (appName && appDescription && files.length > 0) {
+                const appList = document.getElementById('appList');
+                const appItem = document.createElement('tr');
+                
+                // بناء قائمة الملفات مع أسماء الأزرار
+                const fileLinks = files.map((file, index) => {
+                    const fileButtonName = prompt(`أدخل اسم زر التحميل للملف ${index + 1}:`, `تحميل ${index + 1}`);
+                    return `<a href="${URL.createObjectURL(file)}" target="_blank">${fileButtonName || `تحميل ${index + 1}`}</a>`;
+                }).join("<br/>");
+
+                appItem.innerHTML = `
+                    <td>${appName}</td>
+                    <td>${appDescription}</td>
+                    <td>${fileLinks}</td>
+                    <td><button onclick="removeApp(this)">حذف</button></td>
+                `;
+                appList.appendChild(appItem);
+
+                // إعادة تعيين الحقول
+                document.getElementById('appName').value = '';
+                document.getElementById('appDescription').value = '';
+                document.querySelectorAll('#fileInputs input[type="file"]').forEach(input => input.value = '');
+            } else {
+                alert("يرجى ملء جميع الحقول وإضافة ملف واحد على الأقل.");
+            }
+        }
+
+        function removeApp(button) {
+            const row = button.closest('tr');
+            row.remove();
         }
     </script>
 </body>
