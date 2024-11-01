@@ -4,115 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>صفحة الإدارة</title>
-    <script type="module">
-        // Import Firebase libraries
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js";
-        import { getDatabase, ref, set, push, remove, onValue } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-database.js";
-
-        // Firebase configuration
-        const firebaseConfig = {
-            apiKey: "YOUR_API_KEY",
-            authDomain: "YOUR_AUTH_DOMAIN",
-            databaseURL: "YOUR_DATABASE_URL",
-            projectId: "YOUR_PROJECT_ID",
-            storageBucket: "YOUR_STORAGE_BUCKET",
-            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-            appId: "YOUR_APP_ID",
-            measurementId: "YOUR_MEASUREMENT_ID"
-        };
-
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
-        const appsRef = ref(db, 'apps');
-
-        // Function to display apps in the admin page
-        function displayApps() {
-            onValue(appsRef, (snapshot) => {
-                const appList = document.getElementById('appList');
-                appList.innerHTML = ''; // Clear previous list
-                const apps = snapshot.val();
-                for (const key in apps) {
-                    const app = apps[key];
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td>${app.name}</td>
-                        <td>${app.description}</td>
-                        <td><button onclick="deleteApp('${key}')">حذف</button></td>
-                    `;
-                    appList.appendChild(row);
-                }
-            });
-        }
-
-        // Function to add a new app
-        document.getElementById('addAppButton').addEventListener('click', () => {
-            const name = document.getElementById('appName').value;
-            const description = document.getElementById('appDescription').value;
-            const link = document.getElementById('appLink').value;
-
-            const newAppRef = push(appsRef);
-            set(newAppRef, { name, description, link });
-
-            document.getElementById('appName').value = '';
-            document.getElementById('appDescription').value = '';
-            document.getElementById('appLink').value = '';
-        });
-
-        // Function to delete an app
-        function deleteApp(key) {
-            const appRef = ref(db, 'apps/' + key);
-            remove(appRef);
-        }
-
-        displayApps(); // Load apps on page load
-    </script>
-    <style>
-        body { background-color: #121212; color: #ffffff; font-family: Arial, sans-serif; margin: 0; padding: 20px; }
-        h2 { text-align: center; color: gold; }
-        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
-        th, td { border: 1px solid #444; padding: 10px; text-align: center; }
-        .button { background-color: #444; color: #ffffff; border: none; border-radius: 4px; padding: 10px; cursor: pointer; }
-        .upload-section { margin-bottom: 20px; }
-    </style>
+    <script type="module" src="admin.js"></script>
 </head>
 <body>
-    <div class="password-section" id="passwordSection">
-        <h3>أدخل كلمة المرور للدخول إلى صفحة الإدارة</h3>
-        <input type="password" id="passwordInput" placeholder="كلمة المرور" required>
-        <button class="button" id="submitPassword">دخول</button>
-    </div>
-    <div id="adminContent" style="display: none;">
-        <h2>صفحة الإدارة</h2>
-        <div class="upload-section">
-            <h3>إضافة تطبيق جديد</h3>
-            <input type="text" id="appName" placeholder="اسم التطبيق" required>
-            <textarea id="appDescription" placeholder="وصف التطبيق" required></textarea>
-            <input type="text" id="appLink" placeholder="رابط التطبيق" required>
-            <button class="button" id="addAppButton">إضافة التطبيق</button>
-        </div>
-        <table>
-            <thead>
-                <tr>
-                    <th>اسم التطبيق</th>
-                    <th>الوصف</th>
-                    <th>الإجراء</th>
-                </tr>
-            </thead>
-            <tbody id="appList"></tbody>
-        </table>
-    </div>
-    <script>
-        // Password authentication
-        document.getElementById('submitPassword').addEventListener('click', function() {
-            const inputPassword = document.getElementById('passwordInput').value;
-            if (inputPassword === "Dark77") {
-                document.getElementById('passwordSection').style.display = 'none';
-                document.getElementById('adminContent').style.display = 'block';
-            } else {
-                alert('كلمة المرور غير صحيحة!');
-            }
-        });
-    </script>
+    <h2>صفحة الإدارة</h2>
+    <input type="text" id="appName" placeholder="اسم التطبيق">
+    <textarea id="appDescription" placeholder="وصف التطبيق"></textarea>
+    <button id="addAppButton">إضافة التطبيق</button>
 </body>
 </html>
