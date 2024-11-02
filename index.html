@@ -14,7 +14,7 @@
         }
         h1 {
             text-align: center;
-            color: #6c757d; /* لون العنوان سكني */
+            color: #6c757d;
         }
         .app-list {
             margin: 20px 0;
@@ -26,21 +26,57 @@
             border-radius: 5px;
         }
         a {
-            color: #ff4757; /* لون الزر أحمر */
+            color: #ff4757;
             text-decoration: none;
         }
         a:hover {
             text-decoration: underline;
         }
     </style>
-    <!-- تضمين مكتبات Firebase -->
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js";
-        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-database.js";
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js";
+        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-database.js";
 
         const firebaseConfig = {
-            apiKey: "API_KEY_HERE",
-            authDomain: "PROJECT_ID.firebaseapp.com",
-            databaseURL: "https://PROJECT_ID.firebaseio.com",
-            projectId: "PROJECT_ID",
-            storage
+            apiKey: "AIzaSyBImnR0ZRlIElw-Ao-ssi8CjscqiLm6Wa8",
+            authDomain: "dark-haker.firebaseapp.com",
+            databaseURL: "https://dark-haker-default-rtdb.firebaseio.com",
+            projectId: "dark-haker",
+            storageBucket: "dark-haker.firebasestorage.app",
+            messagingSenderId: "186612807780",
+            appId: "1:186612807780:web:479f0949b59e8fcc584771",
+            measurementId: "G-96JW44RLYE"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+
+        const appList = document.getElementById('appList');
+
+        const appsRef = ref(database, 'apps');
+        onValue(appsRef, (snapshot) => {
+            appList.innerHTML = '';
+            snapshot.forEach((childSnapshot) => {
+                const appData = childSnapshot.val();
+                const appItem = document.createElement('div');
+                appItem.className = 'app-item';
+                appItem.innerHTML = `
+                    <strong>${appData.name}</strong><br>
+                    <span>${appData.description}</span><br>
+                    ${appData.files.map((file, index) => `<a href="${file}" target="_blank">تحميل ملف ${index + 1}</a>`).join('<br>')}
+                `;
+                appList.appendChild(appItem);
+            });
+        });
+    </script>
+</head>
+<body>
+
+<h1>Dark Haker</h1>
+
+<div class="app-list" id="appList">
+    <!-- التطبيقات ستظهر هنا -->
+</div>
+
+</body>
+</html>
