@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>صفحة الإدارة</title>
     <style>
-        /* تنسيقات الصفحة */
         body {
             font-family: Arial, sans-serif;
             background-color: #2c3e50;
@@ -14,7 +13,7 @@
         }
         h1 {
             text-align: center;
-            color: #6c757d; /* لون العنوان سكني */
+            color: #6c757d;
         }
         input[type="text"], textarea, input[type="file"] {
             margin: 5px 0;
@@ -39,21 +38,20 @@
         }
     </style>
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js";
-        import { getDatabase, ref, push } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-database.js";
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js";
+        import { getDatabase, ref, push } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-database.js";
 
         const firebaseConfig = {
-            apiKey: "API_KEY_HERE",
-            authDomain: "PROJECT_ID.firebaseapp.com",
-            databaseURL: "https://PROJECT_ID.firebaseio.com",
-            projectId: "PROJECT_ID",
-            storageBucket: "PROJECT_ID.appspot.com",
-            messagingSenderId: "SENDER_ID",
-            appId: "APP_ID",
-            measurementId: "MEASUREMENT_ID"
+            apiKey: "AIzaSyBImnR0ZRlIElw-Ao-ssi8CjscqiLm6Wa8",
+            authDomain: "dark-haker.firebaseapp.com",
+            databaseURL: "https://dark-haker-default-rtdb.firebaseio.com",
+            projectId: "dark-haker",
+            storageBucket: "dark-haker.firebasestorage.app",
+            messagingSenderId: "186612807780",
+            appId: "1:186612807780:web:479f0949b59e8fcc584771",
+            measurementId: "G-96JW44RLYE"
         };
 
-        // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const database = getDatabase(app);
 
@@ -71,11 +69,9 @@
                     files: files
                 };
 
-                // حفظ التطبيق في Firebase
                 const appsRef = ref(database, 'apps');
                 push(appsRef, newApp).then(() => {
                     alert("تم إضافة التطبيق بنجاح!");
-                    // إعادة تعيين الحقول بعد الحفظ
                     document.getElementById('appName').value = '';
                     document.getElementById('appDescription').value = '';
                     document.querySelectorAll('#fileInputs input[type="file"]').forEach(input => input.value = '');
